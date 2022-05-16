@@ -4,8 +4,11 @@ const port = 4000
 const cors = require("cors")
 
 
-
 const { f1, f2 } = require('./models/links')
+
+
+
+const {findlink , insertLink, increaseVisit} = require('./models/links')
 
 // DataBase
 const mongoose = require('mongoose');
@@ -29,13 +32,24 @@ app.use(cors())
 app.get("/", cors(), async (req, res) => {
 	res.send("This is working")
 })
-app.get("/home", cors(), async (req, res) => {
-	res.send("This is the data for the home page")
+
+app.get("/events", () => {console.log("HOLA")})
+
+app.get("/home", async (req, res) => {
+	const url= await findlink();
+	return res.status(200).json({ok:true, url});
+	
+})
+
+app.post('/increase',async (req, res)=>{
+	const {id} = req.body;
+	increaseVisit(id);
 })
 
 app.post("/post_link", async (req, res) => {
 	let { link } = req.body
-	console.log(link)
+	
+	insertLink(link)
 })
 app.listen(port, () => {
 	console.log(`Listening at http://localhost:${port}`)

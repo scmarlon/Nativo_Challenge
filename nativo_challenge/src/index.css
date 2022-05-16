@@ -11,3 +11,32 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+form{
+  margin-top: 2em;
+}
+
+input{
+  padding: .5em 0;
+  margin-right: 1em;
+}
+
+.lista{
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+width: 80%;
+margin:1em auto
+}
+
+.listaTitulos{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1em;
+}
+
+.listaResultados{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1em;
+}
