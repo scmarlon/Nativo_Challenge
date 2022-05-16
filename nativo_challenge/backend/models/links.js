@@ -87,7 +87,7 @@ function newLink(link) {
 }
 
 async function searchForLink(shortLink) {
-    
+
     let myPromise = new Promise(function (myResolve, myReject) {
         MongoClient.connect(url, function (err, db) {
             if (err) myReject(err);
@@ -143,12 +143,5 @@ async function increaseVisit(id) {
 module.exports = { insertLink, findlink, increaseVisit, searchForLink }
 
 
-
-
-
-// const test1 = "lpksjfdhg"
-// const test2 = "1213124"
-
-//  module.exports = { insertlink: insertLink(link) };
 
 

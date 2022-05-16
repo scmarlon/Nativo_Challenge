@@ -49,9 +49,9 @@ app.post('/increase',async (req, res)=>{
 app.get('/:shortLink', async (req,res)=>{
 	const {shortLink} =req.params;
 	const response =  await searchForLink(shortLink);
-
 	console.log(response)
-	return res.status(200).json({ok:true, redirectTo:response.links});
+	return res.status(200).json({ok:true, redirectTo:response?.links});
+	
 })
 
 app.post("/post_link", async (req, res) => {

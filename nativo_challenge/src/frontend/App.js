@@ -30,6 +30,8 @@ function App() {
       await axios.post("http://localhost:4000/increase", {
         id
       })
+      
+      
     } catch (error) {
       console.log(error.message)
     }
@@ -40,7 +42,8 @@ function App() {
     const data = await fetch(`http://localhost:4000/${shortLink}`);
 
     const response = await data.json();
-
+    console.log("esto cuanto ??")
+    
     console.log(response)
 
     window.open(response.redirectTo)
@@ -68,7 +71,7 @@ function App() {
     <div className="App">
       <form onSubmit={postLink}>
         <input type="url" value={link} onChange={(e) => setLink(e.target.value)} />
-        <Button variant='primary' type='submit'>Generate link</Button>
+        <Button variant='primary' type='submit' style={{marginLeft: "10px"}}>Generate link</Button>
       </form>
 
       {loading ?
@@ -76,14 +79,14 @@ function App() {
         :
         (<div className='lista'>
           <div className='listaTitulos'>
-            <h2>Pagina</h2>
-            <h2>Short Url</h2>
-            <h2>Visitas</h2>
+            <h2>URL</h2>
+            <h2>Short Code</h2>
+            <h2>Visits</h2>
           </div>
           {home.map((url) => (
             <div key={url._id} className='listaResultados'>
               <a href={url.links} onClick={() => { increaseVisit(url._id) }}>{url.links}</a>
-              <a href={url.shortLink} onClick={(e)=>{redirectPage(e);increaseVisit(url._id)}}>{url.shortLink}</a>
+              <a href={url.shortLink} onClick={(e)=>{increaseVisit(url._id)}}>{url.shortLink}</a>
               <p>{url.visitCount}</p>
             </div>
           ))}

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import React from 'react'
 import App from "../App";
+import Login from "../Login";
 
 export const AppRouter = () => {
     return (
