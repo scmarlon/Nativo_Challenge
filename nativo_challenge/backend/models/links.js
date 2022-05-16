@@ -55,27 +55,25 @@ async function findlink() {
                 if (err) myReject(err);  // when error;
                 db.close();
                 myResolve(result); // when successful
-                
+
             });
         })
     }).catch(error => { console.log() });
     return myPromise;
 }
 
-function generateShortener(){
+function generateShortener() {
 
     const newLink = shortener.generate();
-    console.log("soy shortener: ", newLink)
 
     return newLink;
-   
+
 
 }
 
 function newLink(link) {
     const linkGenerate = generateShortener();
 
-    console.log("SOY GOD",linkGenerate)
 
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
@@ -86,6 +84,23 @@ function newLink(link) {
             db.close();
         });
     });
+}
+
+async function searchForLink(shortLink) {
+    
+    let myPromise = new Promise(function (myResolve, myReject) {
+        MongoClient.connect(url, function (err, db) {
+            if (err) myReject(err);
+            var dbo = db.db("nativoDB");
+            dbo.collection("customLinks").findOne({ shortLink: shortLink }, (function (err, result) {
+                if (err) myReject(err);  // when error;
+                db.close();
+                myResolve(result); // when successful
+
+            }));
+        })
+    }).catch(error => { console.log() });
+    return myPromise;
 }
 
 
@@ -103,29 +118,29 @@ async function insertLink(link) {
     }
 }
 
-async function increaseVisit(id){
+async function increaseVisit(id) {
     MongoClient.connect(url, async function (err, db) {
-    if (err) throw err;
-    var dbo = db.db("nativoDB");
-
-    dbo.collection("customLinks").find({_id:ObjectId(id)}).toArray(function (err, result) {
         if (err) throw err;
-        var testCount = result[0].visitCount
-        var myquery = { links: result[0].links };
-        var newvalues = { $set: { visitCount: testCount + 1 } };
-        dbo.collection("customLinks").updateOne(myquery, newvalues, function (err, res) {
+        var dbo = db.db("nativoDB");
+
+        dbo.collection("customLinks").find({ _id: ObjectId(id) }).toArray(function (err, result) {
             if (err) throw err;
-            console.log("1 document updated");
-            db.close();
+            var testCount = result[0].visitCount
+            var myquery = { links: result[0].links };
+            var newvalues = { $set: { visitCount: testCount + 1 } };
+            dbo.collection("customLinks").updateOne(myquery, newvalues, function (err, res) {
+                if (err) throw err;
+                console.log("1 document updated");
+                db.close();
+            });
         });
+
+
     });
 
-    
-});
-    
 }
 
-module.exports = { insertLink, findlink, increaseVisit }
+module.exports = { insertLink, findlink, increaseVisit, searchForLink }
 
 
 

@@ -1,17 +1,20 @@
 import '../App.css';
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-
-
 import Button from 'react-bootstrap/Button';
+import {useParams, useNavigate} from 'react-router-dom';
 
 
 function App() {
   const [link, setLink] = useState("");
   const [home, setHome] = useState();
   const [loading, setLoading] = useState(true)
+
+  const {shortLink = ''} = useParams();
+
+  const navigate = useNavigate();
+
+
 
   const data = async () => {
     setLoading(true);
@@ -20,8 +23,6 @@ function App() {
 
     setHome(response.url)
     setLoading(false);
-
-
   }
 
   const increaseVisit = async (id) => {
@@ -35,22 +36,24 @@ function App() {
     data();
   }
 
+  const redirectPage = async()=>{
+    const data = await fetch(`http://localhost:4000/${shortLink}`);
+
+    const response = await data.json();
+
+    console.log(response)
+
+    window.open(response.redirectTo)
+  }
+
   useEffect(() => {
     data();
-
-    // axios.get("http://localhost:4000/home").then(function(response){
-    //   setHome(response.data)
-
-    // }). then(console.log("SOY HOME:",home))
-
-
   }, [])
 
-
-
+  useEffect(()=>{
+    console.log(shortLink)
+    if(shortLink !== '') redirectPage()},[shortLink])
   async function postLink(e) {
-    // e.preventDefault()
-
     try {
       await axios.post("http://localhost:4000/post_link", {
         link
@@ -64,7 +67,7 @@ function App() {
   return (
     <div className="App">
       <form onSubmit={postLink}>
-        <input type="text" value={link} onChange={(e) => setLink(e.target.value)} />
+        <input type="url" value={link} onChange={(e) => setLink(e.target.value)} />
         <Button variant='primary' type='submit'>Generate link</Button>
       </form>
 
@@ -80,7 +83,7 @@ function App() {
           {home.map((url) => (
             <div key={url._id} className='listaResultados'>
               <a href={url.links} onClick={() => { increaseVisit(url._id) }}>{url.links}</a>
-              <a href={url.shortLink} onClick={()=>{}}>{url.shortLink}</a>
+              <a href={url.shortLink} onClick={(e)=>{redirectPage(e);increaseVisit(url._id)}}>{url.shortLink}</a>
               <p>{url.visitCount}</p>
             </div>
           ))}

@@ -8,7 +8,7 @@ const { f1, f2 } = require('./models/links')
 
 
 
-const {findlink , insertLink, increaseVisit} = require('./models/links')
+const {findlink , insertLink, increaseVisit, searchForLink} = require('./models/links')
 
 // DataBase
 const mongoose = require('mongoose');
@@ -46,12 +46,18 @@ app.post('/increase',async (req, res)=>{
 	increaseVisit(id);
 })
 
+app.get('/:shortLink', async (req,res)=>{
+	const {shortLink} =req.params;
+	const response =  await searchForLink(shortLink);
+
+	console.log(response)
+	return res.status(200).json({ok:true, redirectTo:response.links});
+})
+
 app.post("/post_link", async (req, res) => {
 	let { link } = req.body
-	
 	insertLink(link)
 })
 app.listen(port, () => {
 	console.log(`Listening at http://localhost:${port}`)
-	console.log(f1,f2)
 })
