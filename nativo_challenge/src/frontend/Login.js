@@ -2,31 +2,23 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {useNavigate} from 'react-router-dom';
 
-
+//Initialization Login
 function Login() {
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
-
     const navigate = useNavigate();
     
     const checkInfo = () =>{
-
-
       if (email === "admin@nativo.com" && password === "12345") {
-        console.log("Está Nashe")
         navigate("/a")
-        
-        
       } else { 
         console.log("email or password bad")
-        
       }
-
     }
+
     const loginSubmit = (e) => {
       e.preventDefault();
       checkInfo();
-      
     };
   
     return (
@@ -34,6 +26,9 @@ function Login() {
         <div className="container">
           <div className="row d-flex justify-content-center">
             <div className="col-md-4">
+            <div style={{marginTop: "20px"}}>
+              <h3>Sign In</h3>
+            </div>
               <form id="loginform" onSubmit={loginSubmit}>
                 <div className="form-group">
                   <label>Email address</label>
@@ -63,7 +58,6 @@ function Login() {
                 </button>
               </form>
             </div>
-           
           </div>
         </div>
       </div>

@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import React from 'react'
 import App from "../App";
 import { Redirect } from "../Redirect";
 import Login from "../Login";
 
+//Component responsible for routing the application
 export const AppRouter = () => {
     return (
         <BrowserRouter>
@@ -14,6 +14,5 @@ export const AppRouter = () => {
                 <Route path="/redirectTo/:shortLink" element={<Redirect/>} />
             </Routes>
         </BrowserRouter>
-
-    )
-}
+    );
+};

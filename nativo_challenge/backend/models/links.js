@@ -1,9 +1,6 @@
+//"import" the DB
 const { ObjectId } = require('mongodb');
-const { test } = require('picomatch');
-
 const shortener = require('shortid')
-
-
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/nativoDB";
 
@@ -39,10 +36,8 @@ var url = "mongodb://localhost:27017/nativoDB";
 //     });
 // });
 
-
-
+//Search in the DB a specific link
 async function findlink() {
-
     let myPromise = new Promise(function (myResolve, myReject) {
         // "Producing Code" (May take some time)
         MongoClient.connect(url, function (err, db) {
@@ -52,45 +47,38 @@ async function findlink() {
                 if (err) myReject(err);  // when error;
                 db.close();
                 myResolve(result); // when successful
-
             });
         })
     }).catch(error => { console.log() });
     return myPromise;
 }
 
-
+//This function return all only 20 links, the most frequently visited
 function frequentlyLinks (){
     let myPromise = new Promise(function (myResolve, myReject) {
-        // "Producing Code" (May take some time)
         MongoClient.connect(url, function (err, db) {
             if (err) myReject(err);
             var dbo = db.db("nativoDB");
             dbo.collection("customLinks").find({}).sort({visitCount: -1}).limit(20).toArray(function (err, result) {
-                if (err) myReject(err);  // when error;
+                if (err) myReject(err); 
                 db.close();
-                myResolve(result); // when successful
-
+                myResolve(result); 
             });
         })
     }).catch(error => { console.log() });
     return myPromise;
 }
 
-
+//To create a unique short code for links
 function generateShortener() {
-
     const newLink = shortener.generate();
-
     return newLink;
-
-
 }
 
+
+//This function insert a new link in the BD
 function newLink(link) {
     const linkGenerate = generateShortener();
-
-
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
         var dbo = db.db("nativoDB");
@@ -102,16 +90,16 @@ function newLink(link) {
     });
 }
 
+//In this function, the link shortener that had been generated for each link is searched, it is to be able to redirect to the full link
 async function searchForLink(shortLink) {
-
     let myPromise = new Promise(function (myResolve, myReject) {
         MongoClient.connect(url, function (err, db) {
             if (err) myReject(err);
             var dbo = db.db("nativoDB");
             dbo.collection("customLinks").findOne({ shortLink: shortLink }, (function (err, result) {
-                if (err) myReject(err);  // when error;
+                if (err) myReject(err);  
                 db.close();
-                myResolve(result); // when successful
+                myResolve(result); 
 
             }));
         })
@@ -119,7 +107,7 @@ async function searchForLink(shortLink) {
     return myPromise;
 }
 
-
+//Just to know if the links already exist
 async function insertLink(link) {
     var exist = false;
     const result = await findlink();
@@ -134,6 +122,7 @@ async function insertLink(link) {
     }
 }
 
+//Increase the Visits
 async function increaseVisit(id) {
     MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
@@ -146,18 +135,10 @@ async function increaseVisit(id) {
             var newvalues = { $set: { visitCount: testCount + 1 } };
             dbo.collection("customLinks").updateOne(myquery, newvalues, function (err, res) {
                 if (err) throw err;
-                console.log("1 document updated");
                 db.close();
             });
         });
-
-
     });
-
 }
 
 module.exports = { insertLink, findlink, increaseVisit, searchForLink, frequentlyLinks }
-
-
-
-
