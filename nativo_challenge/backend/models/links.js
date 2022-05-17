@@ -39,10 +39,7 @@ var url = "mongodb://localhost:27017/nativoDB";
 //     });
 // });
 
-//---Print Data Base---
-//insertLink(link)
 
-// findlink()
 
 async function findlink() {
 
@@ -61,6 +58,25 @@ async function findlink() {
     }).catch(error => { console.log() });
     return myPromise;
 }
+
+
+function frequentlyLinks (){
+    let myPromise = new Promise(function (myResolve, myReject) {
+        // "Producing Code" (May take some time)
+        MongoClient.connect(url, function (err, db) {
+            if (err) myReject(err);
+            var dbo = db.db("nativoDB");
+            dbo.collection("customLinks").find({}).sort({visitCount: -1}).limit(20).toArray(function (err, result) {
+                if (err) myReject(err);  // when error;
+                db.close();
+                myResolve(result); // when successful
+
+            });
+        })
+    }).catch(error => { console.log() });
+    return myPromise;
+}
+
 
 function generateShortener() {
 
@@ -140,7 +156,7 @@ async function increaseVisit(id) {
 
 }
 
-module.exports = { insertLink, findlink, increaseVisit, searchForLink }
+module.exports = { insertLink, findlink, increaseVisit, searchForLink, frequentlyLinks }
 
 
 

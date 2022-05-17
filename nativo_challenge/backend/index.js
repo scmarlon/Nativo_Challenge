@@ -8,7 +8,7 @@ const { f1, f2 } = require('./models/links')
 
 
 
-const {findlink , insertLink, increaseVisit, searchForLink} = require('./models/links')
+const {findlink , insertLink, increaseVisit, searchForLink, frequentlyLinks} = require('./models/links')
 
 // DataBase
 const mongoose = require('mongoose');
@@ -36,7 +36,7 @@ app.get("/", cors(), async (req, res) => {
 app.get("/events", () => {console.log("HOLA")})
 
 app.get("/home", async (req, res) => {
-	const url= await findlink();
+	const url= await frequentlyLinks();
 	return res.status(200).json({ok:true, url});
 	
 })
@@ -49,8 +49,8 @@ app.post('/increase',async (req, res)=>{
 app.get('/:shortLink', async (req,res)=>{
 	const {shortLink} =req.params;
 	const response =  await searchForLink(shortLink);
-	console.log(response)
-	return res.status(200).json({ok:true, redirectTo:response?.links});
+	if(response) return res.status(200).json({ok:true, redirectTo:response?.links});
+	return res.status(200).json({ok:false});
 	
 })
 

@@ -2,18 +2,13 @@ import '../App.css';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
-import {useParams, useNavigate} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 
 function App() {
   const [link, setLink] = useState("");
   const [home, setHome] = useState();
   const [loading, setLoading] = useState(true)
-
-  const {shortLink = ''} = useParams();
-
-  const navigate = useNavigate();
-
 
 
   const data = async () => {
@@ -23,39 +18,21 @@ function App() {
 
     setHome(response.url)
     setLoading(false);
-  }
+  };
 
   const increaseVisit = async (id) => {
     try {
       await axios.post("http://localhost:4000/increase", {
         id
-      })
-      
-      
+      });
+
+
     } catch (error) {
-      console.log(error.message)
-    }
-    data();
-  }
-
-  const redirectPage = async()=>{
-    const data = await fetch(`http://localhost:4000/${shortLink}`);
-
-    const response = await data.json();
-    console.log("esto cuanto ??")
+      console.log(error.message);
+    };
     
-    console.log(response)
+  };
 
-    window.open(response.redirectTo)
-  }
-
-  useEffect(() => {
-    data();
-  }, [])
-
-  useEffect(()=>{
-    console.log(shortLink)
-    if(shortLink !== '') redirectPage()},[shortLink])
   async function postLink(e) {
     try {
       await axios.post("http://localhost:4000/post_link", {
@@ -64,14 +41,21 @@ function App() {
     } catch (error) {
       console.log(error.message)
     }
-
     data();
   }
+
+  useEffect(() => {
+    data();
+  }, [])
+
+
+
   return (
+
     <div className="App">
-      <form onSubmit={postLink}>
+      <form onSubmit={()=>{postLink();document.location.reload(); }}>
         <input type="url" value={link} onChange={(e) => setLink(e.target.value)} />
-        <Button variant='primary' type='submit' style={{marginLeft: "10px"}}>Generate link</Button>
+        <Button variant='primary' type='submit' style={{ marginLeft: "10px" }}>Generate link</Button>
       </form>
 
       {loading ?
@@ -85,8 +69,8 @@ function App() {
           </div>
           {home.map((url) => (
             <div key={url._id} className='listaResultados'>
-              <a href={url.links} onClick={() => { increaseVisit(url._id) }}>{url.links}</a>
-              <a href={url.shortLink} onClick={(e)=>{increaseVisit(url._id)}}>{url.shortLink}</a>
+              <a href={url.links} onClick={() => { increaseVisit(url._id)}} target='_blank'>{url.links}</a>
+              <a href={`/redirectTo/${url.shortLink}`} onClick={(e) => { increaseVisit(url._id);document.location.reload();  }} target='_blank'>{url.shortLink}</a>
               <p>{url.visitCount}</p>
             </div>
           ))}
